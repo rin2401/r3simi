@@ -16,12 +16,16 @@ def find_id(node, id):
         return n.attrib["text"]
     return None
 
-
 def click_uix():
     while True:
         root = ET.fromstring(device.dump())
+        profile = root.findall(".//*[@resource-id='com.ismaker.android.simsimi:id/layout_profile_main']")
+        if profile:
+            device.press.back()
+            continue
+
         nodes = root.findall(".//*[@resource-id='com.ismaker.android.simsimi:id/item_search_result_title']")
-        if not nodes:
+        if not nodes:            
             break
         for i, node in enumerate(nodes[:1]):    
             bounds = list(map(int, re.findall("\d+", node.attrib["bounds"])))
@@ -60,23 +64,23 @@ def parse_uix(uix):
 f = open("crawl_yeu.jsonl", "a", encoding="utf8")
 
 data = []
-pre_y = 0
+pre_box = 0
 i = 0
 while True:
     click_uix()
     page = parse_uix(device.dump())
     if not page:
         continue
-    ey = page[-1]["bounds"][-1]
-    if ey == pre_y:
+    box = page[-1]
+    ey = box["bounds"][-1]
+    if box == pre_box:
         break
-    pre_y = ey
+    pre_box = page[-1]
     data += page
     for d in page:
         i += 1
-        d["id"] = i
-
-        f.write(json.dumps(d, ensure_ascii=False, sort_keys=True)+"\n")
+        d.pop("bounds")
+        f.write(json.dumps(d, ensure_ascii=False)+"\n")
         print(i, d["texts"])
     #d.drag(sx, sy, ex, ey)
     result = device.drag(450, ey - 25, 450, 370)

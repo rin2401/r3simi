@@ -1,6 +1,7 @@
 # simsimi
 
 Tool for practice uiautomator for android.
+<p align="center"><img src="img/demo.gif"/></p>
 
 ## Usage
 - Install NoxPlayer v6.6.1.2 (contains adb v1.0.36, so need copy adb files to ./platform_tools ) or Android Studio Emulator (some app can't install with x86)

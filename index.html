@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" href="{{ url_for('static', filename='img/moon.png') }}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/moon.png') }}" type="image/x-icon"/>
+    <title>r3flow</title>
+    <link rel="stylesheet" href="https://unpkg.com/botui/build/botui.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/botui/build/botui-theme-default.css" />
+    <style type="text/css">
+        .botui-app-container {
+            margin-top: 50px;
+            height: auto;
+            width: 700px;
+            overflow-y: auto;
+
+        }
+
+        .botui-message-content.text {
+            background-color: #fff;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+            color: #4a4a4a;
+            font-family: 'Lato', sans-serif;
+            border-radius: 4px;
+            font-size: 18px;
+        }
+
+        .botui-message-content.loading {
+            background-color: #fff;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+            color: #4a4a4a;
+            border-radius: 4px;
+        }
+
+        .botui-actions-buttons {
+            text-align: center;
+        }
+
+        .botui-actions-text-input {
+            width: 100%;
+            /*float: right;*/
+        }
+
+        button.botui-actions-buttons-button {
+            outline: none !important;
+            font-family: 'Lato', sans-serif;
+            font-size: 18px;
+            border-radius: 4px;
+            background-color: #ffb61e;
+        }
+
+        .botui-message-content.human {
+            background-color: #ffb61e;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="botui-app-container">
+        <div id="my-botui-app">
+                <bot-ui></bot-ui>
+        </div>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/vue/2.0.5/vue.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/botui/build/botui.min.js"></script>
+<script type="text/javascript">
+	var botui = new BotUI('my-botui-app');
+    var chat = null
+    chat = bot_chat('Chào bạn! 👋')
+
+    function bot_chat(text) {
+        chat = botui.message.bot({
+            content: text,
+            loading: true,
+            delay: 500,
+        })
+
+        chat = chat.then(function () {
+            return botui.action.text({
+                action: {
+                    placeholder: 'Type message'
+                }
+            })
+        })
+
+        chat = chat.then(function (res) {
+            get_respose(res.value)
+        })
+
+        return chat
+    }
+
+    function get_respose(text) {
+        url = "https://secureapp.simsimi.com/v1/simsimi/talkset"
+        params = {
+            "uid": "293022127",
+            "av": "6.9.1.4",
+            "lc": "vn",
+            "cc": "US",
+            "tz": "Asia/Bangkok",
+            "os": "a",
+            "ak": "lq/jAFm4PgSOyGNi6yS0iEHeC0g=",
+            "message_sentence": text,
+            "normalProb": "8",
+            "isFilter": "1",
+            "talkCnt": "1",
+            "talkCntTotal": "30",
+            "reqFilter": "1",
+            "session": "A8U6yQZPdxMoCh1vuuvqmdphoyS1fYznRmWAbwiVW6LrnKCHoxnUqTTXDqRn3ksG7Q99Abr8toBVBdxDfxY7G5ff",
+            "triggerKeywords": "[]"
+        }
+
+        $.get({
+            url: url,
+            data: params,
+        }).done(data => {
+            console.log(data)
+            bot_chat(data.answers[0].sentence)
+        }).fail(data => {
+            console.log(data)
+        })
+    }
+</script>
+</html>

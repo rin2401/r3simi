@@ -2,9 +2,9 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="icon" href="{{ url_for('static', filename='img/moon.png') }}" type="image/x-icon"/>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/moon.png') }}" type="image/x-icon"/>
-    <title>r3flow</title>
+<!--     <link rel="icon" href="{{ url_for('static', filename='img/moon.png') }}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/moon.png') }}" type="image/x-icon"/> -->
+    <title>Simsimi</title>
     <link rel="stylesheet" href="https://unpkg.com/botui/build/botui.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/botui/build/botui-theme-default.css" />
     <style type="text/css">
@@ -93,8 +93,9 @@
     }
 
     function get_respose(text) {
+        cors_url = "https://cors-anywhere.herokuapp.com"
         url = "https://secureapp.simsimi.com/v1/simsimi/talkset"
-        params = {
+        params =  {
             "uid": "293022127",
             "av": "6.9.1.4",
             "lc": "vn",
@@ -112,15 +113,18 @@
             "triggerKeywords": "[]"
         }
 
-        $.get({
+        url = cors_url + "/" + url + "/?" + jQuery.param(params)
+        $.ajax({
+            method: "GET",
             url: url,
-            data: params,
         }).done(data => {
             console.log(data)
-            bot_chat(data.answers[0].sentence)
+            bot_chat(data.simsimi_talk_set.answers[0].sentence)
         }).fail(data => {
             console.log(data)
+            bot_chat("Mình đang bị 🐛 🐞 🐜 cắnnn")
         })
     }
+
 </script>
 </html>

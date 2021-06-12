@@ -1,4 +1,4 @@
-# simsimi
+# r3simi
 
 Tool for practice uiautomator for android.
 <p align="center"><img src="img/demo.gif"/></p>
